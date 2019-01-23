@@ -4,6 +4,7 @@ from webdriver_manager.firefox import GeckoDriverManager
 from time import sleep
 import selenium
 
+
 # createitemlist method only needs to be called once and creates a list of all possible upgrades
 # for the program to refer back to.
 def createitemlist(driver):
@@ -27,6 +28,7 @@ def createitemlist(driver):
 
     return item_list
 
+
 # checkupgrade simply checks whether the first upgrade in the list is available
 def checkupgrade(driver):
     try:
@@ -38,6 +40,9 @@ def checkupgrade(driver):
         pass
     except selenium.common.exceptions.StaleElementReferenceException:
         pass
+    except selenium.common.exceptions.NoSuchElementException:
+        pass
+
 
 # checkitems uses the item list created earlier and iterates through it in reverse order
 # to see what items can be bought, starting with the highest level item available
@@ -51,6 +56,18 @@ def checkitems(item_list):
             pass
 
 
+# checkforgoldencookie does just what it says and checks for a golden cookie.
+# If there is one, it clicks it
+def checkforgoldencookie(driver):
+    try:
+        gold = driver.find_element_by_id('goldenCookie')
+        gold.click()
+    except selenium.common.exceptions.NoSuchElementException:
+        pass
+    except selenium.common.exceptions.ElementNotInteractableException:
+        pass
+    except selenium.common.exceptions.StaleElementReferenceException:
+        pass
 
 
 def main():
@@ -71,6 +88,7 @@ def main():
         try:
             for i in range(checkiteminterval):
                 bigcookie.click()
+            checkforgoldencookie(driver)
             checkupgrade(driver)
             checkitems(item_list)
         except selenium.common.exceptions.NoSuchWindowException:
