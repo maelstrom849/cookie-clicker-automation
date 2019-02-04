@@ -32,10 +32,10 @@ def createitemlist(driver):
 # checkupgrade simply checks whether the first upgrade in the list is available
 def checkupgrade(driver):
     try:
-        # cookie cliker automatically sorts upgrades to show the cheapest one first, so 
+        # cookie clicker automatically sorts upgrades to show the cheapest one first, so
         # this will always check whether the cheapest can be bought right now
-        upgrade = driver.find_element_by_id('upgrade0')
-        upgrade.click()
+        if "crate upgrade enabled" == driver.find_element_by_id('upgrade0').get_attribute("class"):
+            driver.find_element_by_id('upgrade0').click()
     except selenium.common.exceptions.ElementNotInteractableException:
         pass
     except selenium.common.exceptions.StaleElementReferenceException:
@@ -48,20 +48,16 @@ def checkupgrade(driver):
 # to see what items can be bought, starting with the highest level item available
 def checkitems(item_list):
     for i in range(len(item_list)):
-        try:
+        if "product unlocked enabled" == item_list[15-i].get_attribute("class"):
             item_list[15-i].click()
-        except selenium.common.exceptions.ElementNotInteractableException:
-            pass
-        except selenium.common.exceptions.StaleElementReferenceException:
-            pass
 
 
 # checkforgoldencookie does just what it says and checks for a golden cookie.
 # If there is one, it clicks it
 def checkforgoldencookie(driver):
     try:
-        gold = driver.find_element_by_id('goldenCookie')
-        gold.click()
+        if driver.find_element_by_class_name('shimmer'):
+            driver.find_element_by_class_name('shimmer').click()
     except selenium.common.exceptions.NoSuchElementException:
         pass
     except selenium.common.exceptions.ElementNotInteractableException:
@@ -74,8 +70,6 @@ def main():
     # uses webdriver_manager to automatically install Firefox webdriver
     driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
     driver.get('http://orteil.dashnet.org/cookieclicker/')
-    # checks whether 'Cookie' is in the title of the website
-    assert 'Cookie' in driver.title
     # waits for 2 seconds to continue script, in order to give the website a chance to set itself up
     sleep(2)
     #set important variables for the general game
