@@ -6,4 +6,3 @@ Necessary modules:
 
 selenium
 webdriver_manager
-time
